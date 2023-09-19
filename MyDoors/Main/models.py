@@ -1,25 +1,38 @@
+
 from django.db import models
 
-class Doors(models.Model):
-    SHAPE_CHOICES = [
-        ('none', 'None'),
-    ]
+class Shape(models.Model):
+    name = models.CharField(max_length=255)
 
-    COLOR_CHOICES = [
-        ('none', 'None'),
-    ]
+    def __str__(self):
+        return self.name
 
-    MOLDING_CHOICES = [
-        ('none', 'None'),
-    ]
+class Color(models.Model):
+    name = models.CharField(max_length=255)
 
-    PORTAL_CHOICES = [
-        ('none', 'None'),
-    ]
+    def __str__(self):
+        return self.name
 
-    shape = models.CharField(max_length=100, choices=SHAPE_CHOICES)
-    color = models.CharField(max_length=100, choices=COLOR_CHOICES)
-    molding = models.CharField(max_length=100, choices=MOLDING_CHOICES)
-    portal = models.CharField(max_length=100, choices=PORTAL_CHOICES)
+class Molding(models.Model):
+    name = models.CharField(max_length=255)
 
-    # Другие поля и методы модели...
+    def __str__(self):
+        return self.name
+
+class Portal(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+    def __str__(self):
+        return self.name
+
+class Door(models.Model):
+    shape = models.ForeignKey(Shape, on_delete=models.CASCADE, related_name='door_shapes')
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name='door_colors')
+    molding = models.ForeignKey(Molding, on_delete=models.CASCADE, related_name='door_molding')
+    portal = models.ForeignKey(Portal, on_delete=models.CASCADE, related_name='door_portal')
+
+    def __str__(self):
+        return f"Door - Shape: {self.shape}, Color: {self.color}, Molding: {self.molding}, Portal: {self.portal}"

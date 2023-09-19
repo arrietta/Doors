@@ -2,6 +2,8 @@ import telebot
 
 # Замените 'YOUR_BOT_TOKEN' на токен вашего Telegram бота
 bot = telebot.TeleBot('6442182992:AAFF7xkljKsaHEmNh0PfE9k2rMXjZbGii0s')
+
+
 def send_message_to_bot(message):
     try:
         # Замените 'YOUR_CHAT_ID' на ID вашего чата
@@ -9,6 +11,8 @@ def send_message_to_bot(message):
         bot.send_message(chat_id, message)
     except Exception as e:
         print(f"Произошла ошибка при отправке сообщения в Telegram: {str(e)}")
+
+
 if __name__ == "__main__":
     message = "This is a test message sent to the channel."
     send_message_to_bot(message)

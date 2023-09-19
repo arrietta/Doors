@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from .forms import DoorsForm
+from .forms import DoorForm
 from .telegram_bot import send_message_to_bot  # Импортируйте функцию отправки сообщения
 
 def main(request):
     if request.method == 'POST':
-        form = DoorsForm(request.POST)
+        form = DoorForm(request.POST)
         if form.is_valid():
             try:
                 # Формируйте сообщение с данными из формы
@@ -15,10 +15,10 @@ def main(request):
 
                 # Добавьте код сохранения данных в базу данных, если это необходимо
 
-                return render(request, 'doors_form.html', {'form': form, 'success': True})
+                return render(request, 'main.html', {'form': form, 'success': True})
             except Exception as e:
-                return render(request, 'doors_form.html', {'form': form, 'error': str(e)})
+                return render(request, 'main.html', {'form': form, 'error': str(e)})
     else:
-        form = DoorsForm()
+        form = DoorForm()
 
     return render(request, 'main.html', {'form': form})

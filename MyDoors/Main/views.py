@@ -8,8 +8,8 @@ def main(request):
         form = DoorForm(request.POST)
         if form.is_valid():
             try:
-                message = f"Shape: {form.cleaned_data['shape']},\n Color: {form.cleaned_data['color']},\n" \
-                          f" Molding: {form.cleaned_data['molding']},\n Portal: {form.cleaned_data['portal']}"
+                message = f"Shape: {form.cleaned_data['shape']},\nColor: {form.cleaned_data['color']},\n"\
+                          f"Molding: {form.cleaned_data['molding']},\nPortal: {form.cleaned_data['portal']}"
 
                 send_message_to_bot(message)
 

@@ -6,7 +6,7 @@ bot = telebot.TeleBot('6442182992:AAFF7xkljKsaHEmNh0PfE9k2rMXjZbGii0s')
 
 def send_message_to_bot(message):
     try:
-
+    #жони
         chat_id = '@My_Alpha_Doors'
         bot.send_message(chat_id, message)
     except Exception as e:

@@ -1,9 +1,10 @@
-# doors/forms.py
+# forms.py
 
 from django import forms
-from .models import Door
+from .models import Shape, Molding, Portal, Color
 
-class DoorForm(forms.ModelForm):
-    class Meta:
-        model = Door
-        fields = ['shape', 'color', 'molding', 'portal']
+class DoorFilterForm(forms.Form):
+    shape = forms.ModelChoiceField(queryset=Shape.objects.all(), empty_label="Select Shape")
+    molding = forms.ModelChoiceField(queryset=Molding.objects.all(), empty_label="Select Molding", required=False)
+    portal = forms.ModelChoiceField(queryset=Portal.objects.all(), empty_label="Select Portal", required=False)
+    color = forms.ModelChoiceField(queryset=Color.objects.all(), empty_label="Select Color")

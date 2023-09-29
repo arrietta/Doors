@@ -1,16 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Выбор параметров двери</title>
+    <meta charset="UTF-8">
+    <title>Door Filter</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+    <h1>Filter Doors</h1>
+
+    <form method="get" action="{% url 'main' %}">
+    <!-- Dynamic Filtering Fields -->
+    <label for="shape">Select Shape:</label>
+    <select name="shape" id="shape">
+        <option value="">-- All Shapes --</option>
+        {% for shape in shapes %}
+            <option value="{{ shape.id }}">{{ shape.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="molding">Select Molding:</label>
+    <select name="molding" id="molding">
+        <option value="">-- All Moldings --</option>
+    </select>
+
+    <label for="portal">Select Portal:</label>
+    <select name="portal" id="portal">
+        <option value="">-- All Portals --</option>
+    </select>
+
+    <label for="color">Select Color:</label>
+    <select name="color" id="color">
+        <option value="">-- All Colors --</option>
+        {% for color in colors %}
+            <option value="{{ color.name }}">{{ color.name }}</option>
+        {% endfor %}
+    </select>
 
     <button type="submit">Submit</button>
 </form>
 
+
+
+
+    <script>
+    $(document).ready(function () {
+        // Populate moldings based on selected shape
+        $('#shape').on('change', function () {
+            var shapeId = $(this).val();
+            $('#molding').empty();
+            $('#portal').empty();
+
+            if (shapeId) {
+                $.ajax({
+                    url: '/api/moldings/',  // Replace with your API endpoint
+                    data: { shape_id: shapeId },
+                    success: function (data) {
+                        $('#molding').append('<option value="">-- All Moldings --</option>');
+                        $.each(data, function (index, molding) {
+                            $('#molding').append('<option value="' + molding.id + '">' + molding.name + '</option>');
+                        });
+                    }
+                });
+            }
+        });
+
+        // Populate portals based on selected molding
+        $('#molding').on('change', function () {
+            var moldingId = $(this).val();
+            $('#portal').empty();
+
+            if (moldingId) {
+                $.ajax({
+                    url: '/api/portals/',  // Replace with your API endpoint
+                    data: { molding_id: moldingId },
+                    success: function (data) {
+                        $('#portal').append('<option value="">-- All Portals --</option>');
+                        $.each(data, function (index, portal) {
+                            $('#portal').append('<option value="' + portal.id + '">' + portal.name + '</option>');
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

@@ -37,4 +37,5 @@ class Door(models.Model):
     molding = models.ForeignKey(Molding, on_delete=models.CASCADE, null=False)
     portal = models.ForeignKey(Portal, on_delete=models.CASCADE, null=False)
     color = models.ForeignKey(Color, on_delete=models.CASCADE, null=False)
+    image = models.ImageField(upload_to='door_images/', null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0, null=False)

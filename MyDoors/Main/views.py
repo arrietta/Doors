@@ -10,8 +10,12 @@ from .models import Shape, Molding, Portal, Color, Door
 def get_moldings_by_shape(request):
     shape_id = request.GET.get('shape_id')
     moldings = Molding.objects.filter(shape_id=shape_id)
+    door = Door.objects.get(shape=shape_id)
     data = [{'id': molding.id, 'name': molding.name} for molding in moldings]
+
     return JsonResponse(data, safe=False)
+
+
 
 
 def get_portals_by_molding(request):
@@ -20,11 +24,7 @@ def get_portals_by_molding(request):
     data = [{'id': portal.id, 'name': portal.name} for portal in portals]
     return JsonResponse(data, safe=False)
 
-def get_colors_by_portal(request):
-    portal_id = request.GET.get('portal_id')
-    colors = Color.objects.filter(portal_id=portal_id)
-    data = [{'id': color.id, 'name': color.name} for color in colors]
-    return JsonResponse(data, safe=False)
+
 
 
 
@@ -39,7 +39,7 @@ def main(request):
 
     switch = request.GET.get('shape')
 
-    if switch != '' :
+    if switch  :
 
         shape = Shape.objects.get(pk=switch)
         molding = Molding.objects.get(pk=request.GET.get('molding'))
@@ -51,7 +51,13 @@ def main(request):
         send_message_to_bot(message)
 
         # Render the filtered doors and message in your template
-        return redirect('home')
+        return render(request, 'main.html', {
+            'shapes': shapes,
+            'moldings': moldings,
+            'portals': portals,
+            'colors': colors,  # Pass the colors data to the template
+            'filtered_doors': filtered_doors
+        })
      # You can filter doors here based on form selections
     else:
         return render(request, 'main.html', {
@@ -71,7 +77,7 @@ def register(request):
             return redirect('home')  # Replace 'home' with the URL name for your home page
     else:
         form = UserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+    return render(request, 'register.html', {'form': form})
 
 
 def home(request):

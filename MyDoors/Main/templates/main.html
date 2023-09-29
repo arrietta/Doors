@@ -7,6 +7,9 @@
 </head>
 <body>
     <h1>Filter Doors</h1>
+    <dir>
+        <img  class="Door" src="" alt="">
+    </dir>
 
     <form method="get" action="{% url 'main' %}">
     <!-- Dynamic Filtering Fields -->
@@ -44,9 +47,13 @@
 
     <script>
     $(document).ready(function () {
+        var moldingId;
+        var shapeId;
+        var color;
+        var portal;
         // Populate moldings based on selected shape
         $('#shape').on('change', function () {
-            var shapeId = $(this).val();
+            shapeId = $(this).val();
             $('#molding').empty();
             $('#portal').empty();
 
@@ -54,19 +61,23 @@
                 $.ajax({
                     url: '/api/moldings/',  // Replace with your API endpoint
                     data: { shape_id: shapeId },
-                    success: function (data) {
+
+                    success: function (data ) {
                         $('#molding').append('<option value="">-- All Moldings --</option>');
-                        $.each(data, function (index, molding) {
+                        $.each(data, function (index, molding,door) {
                             $('#molding').append('<option value="' + molding.id + '">' + molding.name + '</option>');
                         });
+
                     }
                 });
+
+
             }
         });
 
         // Populate portals based on selected molding
         $('#molding').on('change', function () {
-            var moldingId = $(this).val();
+            moldingId = $(this).val();
             $('#portal').empty();
 
             if (moldingId) {

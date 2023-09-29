@@ -61,10 +61,20 @@
                 $.ajax({
                     url: '/api/moldings/',  // Replace with your API endpoint
                     data: { shape_id: shapeId },
-
                     success: function (data ) {
                         $('#molding').append('<option value="">-- All Moldings --</option>');
-                        $.each(data, function (index, molding,door) {
+                        $.each(data, function (index, molding) {
+                            $('#molding').append('<option value="' + molding.id + '">' + molding.name + '</option>');
+                        });
+
+                    }
+                });
+                $.ajax({
+                    url: '/api/moldings/',  // Replace with your API endpoint
+                    data: { shape_id: shapeId },
+                    success: function (data ) {
+                        $('#molding').append('<option value="">-- All Moldings --</option>');
+                        $.each(data, function (index, Door) {
                             $('#molding').append('<option value="' + molding.id + '">' + molding.name + '</option>');
                         });
 

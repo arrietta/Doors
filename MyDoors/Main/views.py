@@ -14,6 +14,12 @@ def get_moldings_by_shape(request):
     data = [{'id': molding.id, 'name': molding.name} for molding in moldings]
 
     return JsonResponse(data, safe=False)
+def get_door(request):
+    shape_id = request.GET.get('shape_id')
+    door = Door.objects.get(shape=shape_id)
+    data = [{'id': door.id, 'name': door.name} for molding in moldings]
+
+    return JsonResponse(data, safe=False)
 
 
 

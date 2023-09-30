@@ -10,14 +10,27 @@ from .models import Shape, Molding, Portal, Color, Door
 def get_moldings_by_shape(request):
     shape_id = request.GET.get('shape_id')
     moldings = Molding.objects.filter(shape_id=shape_id)
-    door = Door.objects.get(shape=shape_id)
     data = [{'id': molding.id, 'name': molding.name} for molding in moldings]
 
     return JsonResponse(data, safe=False)
 def get_door(request):
     shape_id = request.GET.get('shape_id')
-    door = Door.objects.get(shape=shape_id)
-    data = [{'id': door.id, 'name': door.name} for molding in moldings]
+    molding_Id = request.GET.get('molding_Id')
+    portal_Id = request.GET.get('portal_Id')
+    color_id = request.GET.get('color_id')
+
+    if (shape_id and molding_Id and portal_Id and color_id):
+        doors = Door.objects.filter(shape_id=shape_id, molding_Id=molding_Id, portal_Id=portal_Id, color_id=color_id)
+    elif (shape_id and molding_Id and portal_Id):
+        doors = Door.objects.filter(shape_id=shape_id, molding_Id=molding_Id, portal_Id=portal_Id)
+    elif (shape_id and molding_Id):
+        doors = Door.objects.filter(shape_id=shape_id, molding_id=molding_Id)
+    else:
+        doors = Door.objects.filter(shape_id=shape_id)
+
+
+
+    data = [{'name': door.image.url} for door in doors]
 
     return JsonResponse(data, safe=False)
 

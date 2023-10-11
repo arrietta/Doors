@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
-    <title>Door Filter</title>
+    <title>Doors</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -15,41 +16,38 @@
             <form method="get" action="{% url 'main' %}">
 
                 <label >Select Shape:</label>
-                <div >
+                <div id = 'select_shape'>
                     <input type="hidden" name = "shape" id ="shape" value="">
-                    {% for shape in shapes %}
-                    <button type="button" onclick="set_shape(this)" value="{{ shape.id }}">
-                        {{ shape.name }}
-                    </button>
-                    {% endfor %}
+
                 </div>
 
 
 
-                <label for="molding">Select Molding:</label>
+
+                <label >Select Portal:</label>
+                <div id="select_portal" >
+                    <input type="hidden" name = "portal" id ="portal" value="">
+
+                </div>
+
+                <label >Select Bevel:</label>
+                <div id="select_bevel" >
+                    <input type="hidden" name = "bevel" id ="bevel" value="">
+
+                </div>
+
+                <label >Select Molding:</label>
                 <div id="select_molding" >
                     <input type="hidden" name = "molding" id ="molding" value="">
 
-
-
-                    </button>
-
                 </div>
 
+                <label >Select Color:</label>
+                <div id="select_color" >
+                    <input type="hidden" name = "color" id ="color" value="">
 
-                <label for="portal">Select Portal:</label>
-                <select name="portal" id="portal">
-                    <option value="">-- All Portals --</option>
-                </select>
-
-                <label for="color">Select Color:</label>
-                <select name="color" id="color">
-                    <option value="">-- All Colors --</option>
-                    {% for color in colors %}
-                        <option value="{{ color.name }}">{{ color.name }}</option>
-                    {% endfor %}
-                </select>
-
+                </div>
+                <br>
                 <button type="submit">Submit</button>
             </form>
         </div>
@@ -58,109 +56,69 @@
 
 
 
-
-
-
     <script>
-        var moldingId = "";
-        var shapeId="";
-        var colorId ="";
-        var portalId="";
-        function geturl(){
-            if(shapeId && moldingId && portalId && colorId){
-                    $.ajax({
-                        url: 'api/get_door/',
-                        data: { shape_id: shapeId,molding_Id : moldingId, portal_Id :portalId , color_id : colorId },
-                        success: function (data ) {
-                            $.each(data, function (index, door) {
-                                $('.Door').attr("src",door.name);
-                            });
+        var data = {{ data|safe }};
 
-                        }
-                    });
-                }else if (shapeId && moldingId && portalId ){
-                    $.ajax({
-                        url: 'api/get_door/',
-                        data: { shape_id: shapeId,molding_Id : moldingId, portal_Id :portalId},
-                        success: function (data ) {
-                            $.each(data, function (index, door) {
-                                $('.Door').attr("src",door.name);
-                            });
+        data['shapes'].forEach(element => add_element(element,'#select_shape','shape'));
+        data['portals'].forEach(element => add_element(element,'#select_portal','portal'));
+        data['bevels'].forEach(element => add_element(element,'#select_bevel','bevel'));
+        data['moldings'].forEach(element => add_element(element,'#select_molding','molding'));
+        data['color'].forEach(element => add_element(element,'#select_color','color'));
 
-                        }
-                    });
-                }
-                else if (shapeId && moldingId ){
-                    $.ajax({
-                        url: 'api/get_door/',
-                        data: { shape_id: shapeId,molding_Id : moldingId},
-                        success: function (data ) {
-                            $.each(data, function (index, door) {
-                                $('.Door').attr("src",door.name);
-                            });
+        let shape;
+        let portal;
+        let bevel;
+        let molding;
+        let color;
 
-                        }
-                    });
-                }else if (shapeId  ){
-                    $.ajax({
-                        url: 'api/get_door/',
-                        data: { shape_id: shapeId},
-                        success: function (data ) {
-                            $.each(data, function (index, door) {
-                                $('.Door').attr("src",door.name);
-                            });
+        function add_element(object, target , type){
+            type ="'"+type+"'";
 
-                        }
-                    });
-                }
+            $(target).append('<button type="button" class='+type+' id = "type_'+object['id']+'" onclick="set_value(this,'+type+')" ' +
+                'value = "' + object['id'] + '">' + object['name'] + '</button>');
         }
-
-
-
-
-
-       function set_molding(button) {
-            moldingId = button.value;
-            $('#molding').attr("value",moldingId);
-            $('#portal').empty();
-
-            if (moldingId) {
-                $.ajax({
-                    url: '/api/portals/',  // Replace with your API endpoint
-                    data: { molding_id: moldingId },
-                    success: function (data) {
-                        $.each(data, function (index, portal) {
-                            $('#portal').append('<option value="' + portal.id + '">' + portal.name + '</option>');
-                        });
-                    }
-                });
+        function set_value(object , type){
+            switch (type) {
+                case 'shape':
+                    shape = object.value;
+                    show_element('portal')
+                    data['portals'].forEach(element =>hide_element(element,'portal','shape',object.innerHTML));
+                    break;
+                case 'portal':
+                    portal = object.value;
+                    show_element('bevel')
+                    data['bevels'].forEach(element =>hide_element(element,'bevel','portal',object.innerHTML));
+                    break;
+                case 'bevel':
+                    bevel = object.value;
+                    show_element('molding')
+                    data['moldings'].forEach(element =>hide_element(element,'molding','bevel',object.innerHTML));
+                    break;
+                case 'molding':
+                    molding = object.value;
+                    break;
+                case 'color':
+                    color = object.value;
+                    break;
             }
-            geturl()
+            $('#'+type).attr('value' , object.value);
+
         }
+        function hide_element(array, target,type, attr){
 
-        function set_shape(button) {
-            shapeId = button.value;
-            $('#shape').attr("value",shapeId);
-            $('#select_molding').empty();
-            $('#select_molding').append('<input type="hidden" name = "molding" id ="molding" value="">');
-            $('#portal').empty();
-
-            if (shapeId) {
-                $.ajax({
-                    url: '/api/moldings/',  // Replace with your API endpoint
-                    data: { shape_id: shapeId },
-                    success: function (data ) {
-                        $.each(data, function (index, molding) {
-                            $('#select_molding').append('<button type="button" onclick="set_molding(this)" value="' + molding.id + '">' + molding.name + '</button>');
-                        });
-                    }
-                });
-                geturl()
+            // $("." + target+"[value='"+array['id']+"']").hide();
+            if(array[type] !== attr){
+                $("." + target+"[value='"+array['id']+"']").hide();
 
             }
+
+        }
+        function show_element(target){
+            $("." + target).show();
         }
 
-</script>
+
+    </script>
 
 </body>
 </html>

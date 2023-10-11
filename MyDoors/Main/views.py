@@ -1,91 +1,56 @@
+import json
+
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .telegram_bot import send_message_to_bot
-from .models import Shape, Molding, Portal, Color, Door
-
-
-def get_moldings_by_shape(request):
-    shape_id = request.GET.get('shape_id')
-    moldings = Molding.objects.filter(shape_id=shape_id)
-    data = [{'id': molding.id, 'name': molding.name} for molding in moldings]
-
-    return JsonResponse(data, safe=False)
-def get_door(request):
-    shape_id = request.GET.get('shape_id')
-    molding_Id = request.GET.get('molding_Id')
-    portal_Id = request.GET.get('portal_Id')
-    color_id = request.GET.get('color_id')
-
-    if (shape_id and molding_Id and portal_Id and color_id):
-        doors = Door.objects.filter(shape_id=shape_id, molding_Id=molding_Id, portal_Id=portal_Id, color_id=color_id)
-    elif (shape_id and molding_Id and portal_Id):
-        doors = Door.objects.filter(shape_id=shape_id, molding_Id=molding_Id, portal_Id=portal_Id)
-    elif (shape_id and molding_Id):
-        doors = Door.objects.filter(shape_id=shape_id, molding_id=molding_Id)
-    else:
-        doors = Door.objects.filter(shape_id=shape_id)
-
-
-
-    data = [{'name': door.image.url} for door in doors]
-
-    return JsonResponse(data, safe=False)
-
-
-
-
-def get_portals_by_molding(request):
-    molding_id = request.GET.get('molding_id')
-    portals = Portal.objects.filter(molding_id=molding_id)
-    data = [{'id': portal.id, 'name': portal.name} for portal in portals]
-    return JsonResponse(data, safe=False)
-
-
-
+from .models import Shape, Molding, Portal, Color, Door, Bevel
 
 
 @login_required
 def main(request):
-
     shapes = Shape.objects.all()
-    moldings = Molding.objects.all()
     portals = Portal.objects.all()
-    colors = Color.objects.all()  # Fetch color data from the Color model
-    filtered_doors = Door.objects.all()
+    bevels = Bevel.objects.all()
+    moldings = Molding.objects.all()
+
+    colors = Color.objects.all()
+    doors = Door.objects.all()
+
+    data = {
+        "shapes": [{'id': shape.pk, "name": shape.name} for shape in shapes],
+        'portals': [{'id': portal.pk, 'name': portal.name, 'shape': str(portal.shape)} for portal in portals],
+        'bevels': [{'id': bevel.pk, 'name': bevel.name, 'shape': str(bevel.shape), 'portal': str(bevel.portal)} for
+                   bevel in bevels],
+        'moldings': [
+            {'id': molding.pk, 'name': molding.name, 'shape': str(molding.shape), 'portal': str(molding.portal),
+             'bevel': str(molding.bevel)}
+            for molding in moldings],
+        'color': [{'id': color.pk, 'name': color.name} for color in colors],
+        'door': [{'id': door.pk, 'shape': str(door.shape), 'portal': str(door.portal), 'bevel': str(door.bevel),
+                  'molding': str(door.molding),
+                  'color': str(door.color), 'image': str(door.image.url), 'price': str(door.price), } for door in doors],
+
+    }
 
     switch = request.GET.get('shape')
 
-    if switch  :
-
+    if switch:
         shape = Shape.objects.get(pk=switch)
+        portal = Portal.objects.get(pk=request.GET.get('portal'))
+        bevel = Bevel.objects.get(pk=request.GET.get('bevel'))
         molding = Molding.objects.get(pk=request.GET.get('molding'))
-        portal = Portal.objects.get(pk= request.GET.get('portal'))
+
         color = request.GET.get('color')
 
-        message = f"Selected data: Shape={shape}, Molding={molding}, Portal={portal}, Color={color}"
+        message = f"Selected data: Shape={shape},  Portal={portal}, Bevel={bevel}, Molding={molding}, Color={color}"
 
         send_message_to_bot(message)
 
-        # Render the filtered doors and message in your template
-        return render(request, 'main.html', {
-            'shapes': shapes,
-            'moldings': moldings,
-            'portals': portals,
-            'colors': colors,  # Pass the colors data to the template
-            'filtered_doors': filtered_doors
-        })
-     # You can filter doors here based on form selections
-    else:
-        return render(request, 'main.html', {
-            'shapes': shapes,
-            'moldings': moldings,
-            'portals': portals,
-            'colors': colors,  # Pass the colors data to the template
-            'filtered_doors': filtered_doors
-        })
+    data_1 = json.dumps(data);
+    return render(request, 'main.html', {'data': data_1})
+
 
 def register(request):
     if request.method == 'POST':
@@ -97,7 +62,3 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
-
-
-def home(request):
-    return render()

@@ -30,7 +30,7 @@ def main(request):
         'color': [{'id': color.pk, 'name': color.name} for color in colors],
         'door': [{'id': door.pk, 'shape': str(door.shape), 'portal': str(door.portal), 'bevel': str(door.bevel),
                   'molding': str(door.molding),
-                  'color': str(door.color), 'image': str(door.image.url), 'price': str(door.price), } for door in doors],
+                  'color': str(door.color), 'image': door.image.url, 'price': str(door.price), } for door in doors],
 
     }
 

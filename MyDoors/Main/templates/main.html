@@ -5,13 +5,20 @@
     <meta charset="UTF-8">
     <title>Doors</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .image_box{
+            width: 400px;
+            height: 200px;
+        }
+
+    </style>
 </head>
 <body>
     <h1>Filter Doors</h1>
     <div class="box" style="display: flex">
-        <div>
-        <img  class="Door" src="" alt="" height="200px">
-    </div>
+        <div class="image_box">
+            <img  class="Door" id="Door" src="" alt="" height="200px" >
+        </div>
         <div>
             <form method="get" action="{% url 'main' %}">
 
@@ -21,29 +28,33 @@
 
                 </div>
 
-
-
-
-                <label >Select Portal:</label>
                 <div id="select_portal" >
+                    <label >Select Portal:</label>
+                    <br>
                     <input type="hidden" name = "portal" id ="portal" value="">
 
                 </div>
 
-                <label >Select Bevel:</label>
+
                 <div id="select_bevel" >
+                    <label >Select Bevel:</label>
+                    <br>
                     <input type="hidden" name = "bevel" id ="bevel" value="">
 
                 </div>
 
-                <label >Select Molding:</label>
+
                 <div id="select_molding" >
+                    <label >Select Molding:</label>
+                    <br>
                     <input type="hidden" name = "molding" id ="molding" value="">
 
                 </div>
 
-                <label >Select Color:</label>
+
                 <div id="select_color" >
+                    <label >Select Color:</label>
+                    <br>
                     <input type="hidden" name = "color" id ="color" value="">
 
                 </div>
@@ -55,69 +66,86 @@
     </div>
 
 
-
     <script>
-        var data = {{ data|safe }};
+        const data = {{data|safe}};
+    </script>
+    <script>
 
         data['shapes'].forEach(element => add_element(element,'#select_shape','shape'));
         data['portals'].forEach(element => add_element(element,'#select_portal','portal'));
         data['bevels'].forEach(element => add_element(element,'#select_bevel','bevel'));
         data['moldings'].forEach(element => add_element(element,'#select_molding','molding'));
         data['color'].forEach(element => add_element(element,'#select_color','color'));
+        doors = data['door'];
+        elements = [];
 
-        let shape;
-        let portal;
-        let bevel;
-        let molding;
-        let color;
+        function add_element(object, target , type) {
 
-        function add_element(object, target , type){
             type ="'"+type+"'";
-
-            $(target).append('<button type="button" class='+type+' id = "type_'+object['id']+'" onclick="set_value(this,'+type+')" ' +
-                'value = "' + object['id'] + '">' + object['name'] + '</button>');
+            $(target).append('<button type="button" class='+type+' id = "type_'+object['id']+'" '
+                + 'onclick="set_value(this,'+type+')" ' + 'value = "' + object['id'] + '">'
+                + object['name'] + '</button>');
+            if(type !== "'"+'shape'+"'"){
+                $(target).hide();
+            }
         }
         function set_value(object , type){
-            switch (type) {
-                case 'shape':
-                    shape = object.value;
-                    show_element('portal')
-                    data['portals'].forEach(element =>hide_element(element,'portal','shape',object.innerHTML));
-                    break;
-                case 'portal':
-                    portal = object.value;
-                    show_element('bevel')
-                    data['bevels'].forEach(element =>hide_element(element,'bevel','portal',object.innerHTML));
-                    break;
-                case 'bevel':
-                    bevel = object.value;
-                    show_element('molding')
-                    data['moldings'].forEach(element =>hide_element(element,'molding','bevel',object.innerHTML));
-                    break;
-                case 'molding':
-                    molding = object.value;
-                    break;
-                case 'color':
-                    color = object.value;
-                    break;
+
+            const set = {'shape': 'portal', 'portal': 'bevel', 'bevel': 'molding','molding':'color'};
+
+            const list = {'shape':['portal','bevel','molding','color'], 'portal': ['bevel','molding','color'], 'bevel': ['molding','color'],'molding':['color']}
+
+            if(type !== 'color'){
+                list[type].forEach(element =>{
+                    $('#select_'+element).hide();
+                    $('#'+element).attr('value',null);
+                    elements[element] = null;
+                });
             }
+
+            $('#select_'+set[type]).fadeIn()
+            if(type !== 'molding' && type !== 'color'){
+                show_element(set[type]);
+                data[set[type]+'s'].forEach(element =>hide_element(element,set[type],type,object.innerHTML));
+            }
+
+            elements[type] = object.innerHTML;
+            let door = doors.filter(Filtering);
+
             $('#'+type).attr('value' , object.value);
 
+            door.forEach(element => {
+                if(elements[type] === element[type]){
+                    set_image(element['image']);
+                }
+            });
         }
-        function hide_element(array, target,type, attr){
-
-            // $("." + target+"[value='"+array['id']+"']").hide();
-            if(array[type] !== attr){
+        function Filtering(element){
+            const list = ['shape','portal','bevel','molding'];
+            let res;
+            list.forEach(e => {
+                if(elements[e]){
+                    res = element[e] === elements[e];
+                }
+            });
+            return res;
+        }
+        function hide_element(array, target,type, arg){
+            if(array[type] !== arg){
                 $("." + target+"[value='"+array['id']+"']").hide();
-
             }
-
         }
         function show_element(target){
             $("." + target).show();
         }
-
-
+        function set_image(src){
+            let link = $('#Door');
+            if(link.attr("src").toString() !== src.toString()){
+                link.hide();
+                link.attr('src',src);
+                link.fadeIn();
+            }
+        }
     </script>
 
 </body>

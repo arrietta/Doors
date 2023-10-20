@@ -1,20 +1,32 @@
 import json
+import uuid
 
-from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
-from .telegram_bot import send_message_to_bot
-from .models import Shape, Molding, Portal, Color, Door, Bevel
+from django.views.decorators.csrf import csrf_exempt
+
+from .telegram_bot import send_message_to_bot, send_photo_to_bot
+from .forms import DoorForm, SaveForm
+from .models import Shape, Molding, Portal, Color, Door, Bevel, Basket
 
 
-@login_required
+def identification(request):
+    unique_id = request.session.get('unique_id', 'Not available')
+    if not unique_id or unique_id == 'Not available':
+        unique_id = str(uuid.uuid4())
+        request.session['unique_id'] = unique_id
+    else:
+        unique_id = request.session.get('unique_id', 'Not available')
+    return unique_id
+
+
 def main(request):
+    unique_id = identification(request)
+    print(unique_id)
     shapes = Shape.objects.all()
     portals = Portal.objects.all()
     bevels = Bevel.objects.all()
     moldings = Molding.objects.all()
-
     colors = Color.objects.all()
     doors = Door.objects.all()
 
@@ -34,31 +46,44 @@ def main(request):
 
     }
 
-    switch = request.GET.get('shape')
-
-    if switch:
-        shape = Shape.objects.get(pk=switch)
-        portal = Portal.objects.get(pk=request.GET.get('portal'))
-        bevel = Bevel.objects.get(pk=request.GET.get('bevel'))
-        molding = Molding.objects.get(pk=request.GET.get('molding'))
-
-        color = request.GET.get('color')
-
-        message = f"Selected data: Shape={shape},  Portal={portal}, Bevel={bevel}, Molding={molding}, Color={color}"
-
-        send_message_to_bot(message)
-
-    data_1 = json.dumps(data);
-    return render(request, 'main.html', {'data': data_1})
-
-
-def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = DoorForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')  # Replace 'home' with the URL name for your home page
-    else:
-        form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
+            form.save()
+
+    return render(request, 'main.html', {'data': data, 'unique_id': unique_id})
+    # result = Door.objects.get(pk=switch)
+    # img = result.get_image()
+    #
+    # message = f"{result}"
+    #
+    # send_photo_to_bot(img)
+    # send_message_to_bot(message)
+
+
+def basket(request):
+    unique_id = identification(request)
+    orders = Basket.objects.filter(code=unique_id)
+
+    return render(request, 'order.html', {'orders': orders})
+
+
+@csrf_exempt
+def delete(request, pk):
+    if request.method == 'POST':
+        basket = Basket.objects.get(pk=pk)
+        basket.delete()
+
+    return JsonResponse({'message': 'Data saved deleted'})
+
+
+@csrf_exempt
+def save(request):
+    if request.method == 'POST':
+        data_to_save = json.loads(request.body)['data']
+        for data in data_to_save:
+            basket = Basket.objects.get(pk=data['id'])
+            basket.count = data['count']
+            basket.save()
+
+    return JsonResponse({'message': 'Data saved successfully'})

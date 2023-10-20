@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body{
+            display: flex;
+            padding: 20px;
+            list-style: none;
+
+
+        }
+        .list{
+            display: flex;
+            height: 100px;
+        }
+        .describe{
+            margin: auto;
+            display: flex;
+
+        }
+
+    </style>
+</head>
+<body>
+
+
+
+<div class="door"></div>
+<div class="main">
+    {% for order in orders %}
+            <div class="list" id="#order-{{ order.pk }}">
+                <img src="{{ order.door.image.url }}"  alt="image">
+                <div class="describe">
+                    {{ order.door.shape.name }}
+                    {{ order.door.portal.name }}
+                    {{ order.door.bevel.name }}
+                    {{ order.door.molding.name }}
+                    {{ order.door.color.name }}
+                    {{ order.door.price }}
+                    <button value="{{ order.pk }}" onclick="decreaseQuantity(this)" >-</button>
+                    <div class = 'pk' id='count-{{ order.pk }}'>{{order.count}}</div>
+                    <button value="{{ order.pk }}" onclick="increase(this)">+</button>
+                </div>
+            </div>
+    {% endfor %}
+
+
+
+</div>
+
+<script>
+    let set  = [];
+    function edit(object , value){
+        let count = Number(object.html() );
+        let id = object.attr('id').substring(6,999);
+        if(count + value === 0){
+            document.getElementById("#order-"+id).remove();
+            deleteOrder(id)
+
+        }else{
+            object.html(count+value);
+        }
+
+        add_to_set()
+        save();
+    }
+    function decreaseQuantity(object) {
+        let id = object.value;
+        target =$('#count-'+ id);
+        edit(target,-1);
+    }
+    function increase(object){
+        let id = object.value;
+        target =$('#count-'+ id);
+        edit(target,1);
+    }
+    function add_to_set(){
+        let list = [];
+        list =$('.pk');
+        let arr;
+
+        for (let i = 0; i < list.length; i++) {
+            arr = {'id': list.get(i).id.substring(6, 999), 'count': list.get(i).innerHTML}
+            set.push(arr);
+        }
+    }
+    function deleteOrder(orderId) {
+        $.ajax({
+            url: `/Delete/` + orderId+'/',
+            method: 'POST',
+            success: function(data) {
+                 $('#message').text(data.message);
+
+            },
+            error: function(error) {
+                console.error('Ошибка при удалении заказа:', error);
+            }
+        });
+    }
+
+
+    function save(){
+        $.ajax({
+            type: 'POST',
+            url: '/save/',  // The URL should match your URL pattern
+            data: JSON.stringify({ 'data': set }),
+            contentType: 'application/json',
+            success: function(data) {
+                $('#message').text(data.message); // Display the response message
+            }
+        });
+        set = [];
+    }
+</script>
+
+
+
+
+
+
+
+</body>
+</html>

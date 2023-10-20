@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     {% load static %}
     <meta charset="UTF-8">
@@ -14,24 +14,28 @@
     </style>
 </head>
 <body>
+
+
     <h1>Filter Doors</h1>
     <div class="box" style="display: flex">
         <div class="image_box">
-            <img  class="Door" id="Door" src="" alt="" height="200px" >
+            <img  class="Door" id="Door_image" src="/media/door_images/dino.png" alt="" height="200px" >
         </div>
         <div>
-            <form method="get" action="{% url 'main' %}">
+            <form method="post" action="{% url 'main' %}">
+                 {% csrf_token %}
+                <input type="hidden"  name = "code" id ="code" value="{{unique_id}}">
+                <input type="hidden" name = "door" id ="door" value="">
 
                 <label >Select Shape:</label>
                 <div id = 'select_shape'>
-                    <input type="hidden" name = "shape" id ="shape" value="">
 
                 </div>
 
                 <div id="select_portal" >
                     <label >Select Portal:</label>
                     <br>
-                    <input type="hidden" name = "portal" id ="portal" value="">
+
 
                 </div>
 
@@ -39,7 +43,7 @@
                 <div id="select_bevel" >
                     <label >Select Bevel:</label>
                     <br>
-                    <input type="hidden" name = "bevel" id ="bevel" value="">
+
 
                 </div>
 
@@ -47,7 +51,6 @@
                 <div id="select_molding" >
                     <label >Select Molding:</label>
                     <br>
-                    <input type="hidden" name = "molding" id ="molding" value="">
 
                 </div>
 
@@ -55,98 +58,21 @@
                 <div id="select_color" >
                     <label >Select Color:</label>
                     <br>
-                    <input type="hidden" name = "color" id ="color" value="">
 
                 </div>
                 <br>
-                <button type="submit">Submit</button>
+                <button type="submit" onclick="validate()">Submit</button>
             </form>
         </div>
 
     </div>
+    <div><a href="{% url 'basket' %}"> <button>Orders</button> </a></div>
 
 
     <script>
-        const data = {{data|safe}};
-    </script>
-    <script>
-
-        data['shapes'].forEach(element => add_element(element,'#select_shape','shape'));
-        data['portals'].forEach(element => add_element(element,'#select_portal','portal'));
-        data['bevels'].forEach(element => add_element(element,'#select_bevel','bevel'));
-        data['moldings'].forEach(element => add_element(element,'#select_molding','molding'));
-        data['color'].forEach(element => add_element(element,'#select_color','color'));
-        doors = data['door'];
-        elements = [];
-
-        function add_element(object, target , type) {
-
-            type ="'"+type+"'";
-            $(target).append('<button type="button" class='+type+' id = "type_'+object['id']+'" '
-                + 'onclick="set_value(this,'+type+')" ' + 'value = "' + object['id'] + '">'
-                + object['name'] + '</button>');
-            if(type !== "'"+'shape'+"'"){
-                $(target).hide();
-            }
-        }
-        function set_value(object , type){
-
-            const set = {'shape': 'portal', 'portal': 'bevel', 'bevel': 'molding','molding':'color'};
-
-            const list = {'shape':['portal','bevel','molding','color'], 'portal': ['bevel','molding','color'], 'bevel': ['molding','color'],'molding':['color']}
-
-            if(type !== 'color'){
-                list[type].forEach(element =>{
-                    $('#select_'+element).hide();
-                    $('#'+element).attr('value',null);
-                    elements[element] = null;
-                });
-            }
-
-            $('#select_'+set[type]).fadeIn()
-            if(type !== 'molding' && type !== 'color'){
-                show_element(set[type]);
-                data[set[type]+'s'].forEach(element =>hide_element(element,set[type],type,object.innerHTML));
-            }
-
-            elements[type] = object.innerHTML;
-            let door = doors.filter(Filtering);
-
-            $('#'+type).attr('value' , object.value);
-
-            door.forEach(element => {
-                if(elements[type] === element[type]){
-                    set_image(element['image']);
-                }
-            });
-        }
-        function Filtering(element){
-            const list = ['shape','portal','bevel','molding'];
-            let res;
-            list.forEach(e => {
-                if(elements[e]){
-                    res = element[e] === elements[e];
-                }
-            });
-            return res;
-        }
-        function hide_element(array, target,type, arg){
-            if(array[type] !== arg){
-                $("." + target+"[value='"+array['id']+"']").hide();
-            }
-        }
-        function show_element(target){
-            $("." + target).show();
-        }
-        function set_image(src){
-            let link = $('#Door');
-            if(link.attr("src").toString() !== src.toString()){
-                link.hide();
-                link.attr('src',src);
-                link.fadeIn();
-            }
-        }
+        const get_data = {{data|safe}};
     </script>
 
+    <script src="{% static 'script.js' %}"></script>
 </body>
 </html>

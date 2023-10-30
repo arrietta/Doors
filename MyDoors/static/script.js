@@ -8,11 +8,12 @@
     elements = [];
     code = $('#code').attr('value');
     function add_element(object, target , type) {
-        type ="'"+type+"'";
-        $(target).append(`<button type="button" class=${type} id = "type_${object['id']}" onclick="set_value(this,${type})" value = "${object['id']}">${object['name']}</button>`);
-        if(type !== "'"+'shape'+"'"){
+        typee ="'"+type+"'";
+        $(target).append(`<button type="button" class=${typee} id = "type_${object['id']}" onclick="set_value(this,${typee})" value = "${object['id']}">${object['name']}</button>`);
+        if(typee !== "'"+'shape'+"'"){
             $(target).hide();
         }
+        $('.'+type).addClass('butn-light');
     }
     function shuffle(array) {
         let currentIndex = array.length,  randomIndex;
@@ -86,5 +87,4 @@
 
     }
     window.setInterval(validate, 100);
-
 

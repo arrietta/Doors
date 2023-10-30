@@ -1,24 +1,11 @@
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <title>Doors</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        .image_box{
-            width: 400px;
-            height: 200px;
-        }
-
-    </style>
-</head>
-<body>
-
-
-    <h1>Filter Doors</h1>
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+    <main >
+        <h1>Filter Doors</h1>
     <div class="box" style="display: flex">
-        <div class="image_box">
+        <div class="image_box"  style="width: 300px">
             <img  class="Door" id="Door_image" src="/media/door_images/dino.png" alt="" height="200px" >
         </div>
         <div>
@@ -74,5 +61,9 @@
     </script>
 
     <script src="{% static 'script.js' %}"></script>
-</body>
-</html>
+    </main>
+
+{% endblock %}
+
+
+

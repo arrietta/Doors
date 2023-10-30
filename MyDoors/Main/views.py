@@ -1,12 +1,12 @@
 import json
 import uuid
 
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from .telegram_bot import send_message_to_bot, send_photo_to_bot
-from .forms import DoorForm, SaveForm
+from .forms import DoorForm
 from .models import Shape, Molding, Portal, Color, Door, Bevel, Basket
 
 
@@ -71,8 +71,8 @@ def basket(request):
 @csrf_exempt
 def delete(request, pk):
     if request.method == 'POST':
-        basket = Basket.objects.get(pk=pk)
-        basket.delete()
+        order = Basket.objects.get(pk=pk)
+        order.delete()
 
     return JsonResponse({'message': 'Data saved deleted'})
 
@@ -82,8 +82,8 @@ def save(request):
     if request.method == 'POST':
         data_to_save = json.loads(request.body)['data']
         for data in data_to_save:
-            basket = Basket.objects.get(pk=data['id'])
-            basket.count = data['count']
-            basket.save()
+            order = Basket.objects.get(pk=data['id'])
+            order.count = data['count']
+            order.save()
 
     return JsonResponse({'message': 'Data saved successfully'})

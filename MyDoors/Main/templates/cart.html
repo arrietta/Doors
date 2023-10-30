@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Cart{% endblock %}
+<title>Cart</title>
 {% block content %}
     <main class="container-fluid top-line">
         <div class="row">
-            <div class="col-lg-6 Line orders">
+            <div class="col-lg-6 line orders">
                 {% for order in orders %}
                 <div class="order container-fluid " id="#order-{{ order.pk }}">
                     <div class="image"><img src="{{ order.door.image.url }}" alt=""></div>
@@ -24,25 +24,7 @@
                 </div>
                 {% endfor %}
             </div>
-            <div class="col-lg-6">
-                <div>
-                    <h3>Оформление</h3>
-                    <h3> заявки для заказа:</h3>
-                </div>
-                <form>
-                    <div class="text">
-                        <input type="text" name="name" id ='FullName' placeholder="ФИО">
-                        <input type="text" name="phone" id="phone" placeholder="Телефон">
-                    </div>
-                    <div class="check">
-                        <input type="checkbox">
-                        <input type="checkbox">
-                    </div>
-
-
-                </form>
-
-            </div>
+            <div class="col-lg-6"></div>
         </div>
     </main>
 {% endblock %}

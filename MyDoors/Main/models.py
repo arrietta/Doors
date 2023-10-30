@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 
 class Shape(models.Model):
@@ -64,6 +63,7 @@ class Door(models.Model):
 class Basket(models.Model):
     code = models.CharField(max_length=512)
     door = models.ForeignKey(Door, on_delete=models.CASCADE)
-    count = models.DecimalField(max_digits=5, decimal_places=0,default=1,null=False)
+    count = models.DecimalField(max_digits=5, decimal_places=0, default=1, null=False)
+
     def __str__(self):
         return str(self.code) + str(self.door) + str(self.count)

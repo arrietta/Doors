@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 from .telegram_bot import send_message_to_bot, send_photo_to_bot
 from .forms import DoorForm
-from .models import  Door, Basket
+from .models import Door, Basket
 
 
 def identification(request):
@@ -25,6 +25,7 @@ def main(request):
     print(unique_id)
     doors = Door.objects.all()
     data = json.loads(serializers.serialize('json', doors))
+    print()
     if request.method == 'POST':
         form = DoorForm(request.POST)
         if form.is_valid():

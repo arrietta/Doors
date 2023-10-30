@@ -4,10 +4,10 @@ import uuid
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-
+from django.core import serializers
 from .telegram_bot import send_message_to_bot, send_photo_to_bot
 from .forms import DoorForm
-from .models import Shape, Molding, Portal, Color, Door, Bevel, Basket
+from .models import  Door, Basket
 
 
 def identification(request):
@@ -23,34 +23,12 @@ def identification(request):
 def main(request):
     unique_id = identification(request)
     print(unique_id)
-    shapes = Shape.objects.all()
-    portals = Portal.objects.all()
-    bevels = Bevel.objects.all()
-    moldings = Molding.objects.all()
-    colors = Color.objects.all()
     doors = Door.objects.all()
-
-    data = {
-        "shapes": [{'id': shape.pk, "name": shape.name} for shape in shapes],
-        'portals': [{'id': portal.pk, 'name': portal.name, 'shape': str(portal.shape)} for portal in portals],
-        'bevels': [{'id': bevel.pk, 'name': bevel.name, 'shape': str(bevel.shape), 'portal': str(bevel.portal)} for
-                   bevel in bevels],
-        'moldings': [
-            {'id': molding.pk, 'name': molding.name, 'shape': str(molding.shape), 'portal': str(molding.portal),
-             'bevel': str(molding.bevel)}
-            for molding in moldings],
-        'color': [{'id': color.pk, 'name': color.name} for color in colors],
-        'door': [{'id': door.pk, 'shape': str(door.shape), 'portal': str(door.portal), 'bevel': str(door.bevel),
-                  'molding': str(door.molding),
-                  'color': str(door.color), 'image': door.image.url, 'price': str(door.price), } for door in doors],
-
-    }
-
+    data = json.loads(serializers.serialize('json', doors))
     if request.method == 'POST':
         form = DoorForm(request.POST)
         if form.is_valid():
             form.save()
-
     return render(request, 'main.html', {'data': data, 'unique_id': unique_id})
     # result = Door.objects.get(pk=switch)
     # img = result.get_image()

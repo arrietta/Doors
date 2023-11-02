@@ -17,7 +17,9 @@ function clear(){
       'molding': [],
       'color': []
     };
+
     $("#select_portal").empty();
+    $("#select_shape").empty();
     $("#select_bevel").empty();
     $("#select_molding").empty();
     $("#select_color").empty();
@@ -30,21 +32,23 @@ function iterate() {
         let list = e['fields'];
         for (let el in list) {
             let temp = list[el];
-            if (Array.isArray(types[el])) {
+            if (Array.isArray(types[el])&& !types[el].includes(temp)) {
                 types[el].push(temp);
             }
         }
     });
+    types['shape'].forEach(element => add_element(element,'#select_shape','shape'));
     types['portal'].forEach(element => add_element(element,'#select_portal','portal'));
     types['bevel'].forEach(element => add_element(element,'#select_bevel','bevel'));
     types['molding'].forEach(element => add_element(element,'#select_molding','molding'));
     types['color'].forEach(element => add_element(element,'#select_color','color'));
+    console.log(types);
 }
 
 iterate();
 
+types['collection'].forEach(element => add_element(element,'#select_collection','collection'));
 
-types['shape'].forEach(element => add_element(element,'#select_shape','shape'));
 
 
 elements = [];

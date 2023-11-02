@@ -8,19 +8,20 @@ a:hover{
     transition: 0.2s;
 }
 .Logo{
-    color: #E0E0E0;
+    color:#666666!important;
     font-family: Felidae;
-    font-size: 32px!important;
+    margin-left: 10px;
+    font-size: 26px!important;
     font-style: normal;
     font-weight: 400;
-    line-height: 110%; /* 35.2px */
+    line-height: 110%;
     letter-spacing: -1.12px;
 }
 .navbar-toggler-icon{
     background-image: url("/media/burger.svg")!important;
 }
 .navbar{
-    height: 92px;
+    height: 58px;
 }
 
 .top-line{
@@ -28,20 +29,23 @@ a:hover{
 }
 
 .nav-link{
+    margin: 0 10px;
     color: #E0E0E0;
     font-family: Manrope;
-    font-size: 16px;
+    font-size: 12px;
     font-style: normal;
     font-weight: 200;
     line-height: 110%; /* 17.6px */
     letter-spacing: -0.48px;
     text-transform: uppercase;
+    margin: 0 10px;
 }
 .nav-link[ value="active"]{
     color: #fff;
 }
 
 main{
+    border-top: #fff 2px solid!important;
     position: relative;
     transition: 0.6s;
 }
@@ -74,10 +78,15 @@ main{
 .image{
 
     width: 7rem;
-    float: left; 
+    float: left;
     height: 8rem;
     background-color: #fff;
-   
+
+}
+image_box{
+    width: 400px ;
+    background-image: url("/media/image_box.png");
+    margin-right:50px
 }
 .image > img{
     width: 7rem;
@@ -113,8 +122,8 @@ main{
     height: 1.9rem;
     font: 1em sans-serif;
     margin: auto;
-    line-height: 0rem; 
-         
+    line-height: 0rem;
+
 }
 .buttons > div{
     text-align: center;
@@ -144,16 +153,16 @@ main{
     .buttons{
         width: 5rem;
         height: 1.7rem;
-        
+
     }
     .buttons > button{
         width: 1.6666rem;
         height: 1.6rem;
-        
-             
+
+
     }
     .buttons > div{
-        
+
         width: 1.6666rem;
     }
     .order{

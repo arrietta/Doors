@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+
+    <main >
+        <h1>Filter Doors</h1>
+    <div class="box" style="display: flex">
+        <div class="image_box"  style="width: 400px ; background-image: url("/media/image_box.png");margin-right:50px ">
+            <img  class="Door" id="Door_image" src="/media/door_images/1.ALAVUS.AMPIR.png" alt="" height="400px" >
+        </div>
+        <div>
+            <form method="post" action="{% url 'catalog' %}">
+                 {% csrf_token %}
+                <input type="hidden"  name = "code" id ="code" value="{{unique_id}}">
+                <input type="hidden" name = "door" id ="door" value="">
+
+
+                <label >Select Collection:</label>
+                <div id = 'select_collection'></div>
+                <label >Select Shape:</label>
+                <div id = 'select_shape'>
+
+                </div>
+                 <label >Select Portal:</label>
+                <div id="select_portal" >
+
+                    <br>
+
+
+                </div>
+
+                <label >Select Bevel:</label>
+                <div id="select_bevel" >
+
+                    <br>
+
+
+                </div>
+
+                <label >Select Molding:</label>
+                <div id="select_molding" >
+
+                    <br>
+
+                </div>
+
+                <label >Select Color:</label>
+                <div id="select_color" >
+
+                    <br>
+
+                </div>
+                <br>
+                <button type="submit" style="color : black" onclick="validate()">Submit</button>
+            </form>
+        </div>
+
+    </div>
+
+
+
+
+    </main>
+    <script>
+        const get_data = {{data|safe}};
+    </script>
+
+    <script src="{% static 'sckript.js' %}"></script>
+{% endblock %}
+
+
+

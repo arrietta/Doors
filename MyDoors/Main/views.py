@@ -20,7 +20,7 @@ def identification(request):
     return unique_id
 
 
-def main(request):
+def catalog(request):
     unique_id = identification(request)
     print(unique_id)
     doors = Door.objects.all()
@@ -30,7 +30,7 @@ def main(request):
         form = DoorForm(request.POST)
         if form.is_valid():
             form.save()
-    return render(request, 'main.html', {'data': data, 'unique_id': unique_id})
+    return render(request, 'catalog.html', {'data': data, 'unique_id': unique_id})
     # result = Door.objects.get(pk=switch)
     # img = result.get_image()
     #
@@ -66,3 +66,7 @@ def save(request):
             order.save()
 
     return JsonResponse({'message': 'Data saved successfully'})
+
+
+def main(request):
+    return render(request, 'main.html', )

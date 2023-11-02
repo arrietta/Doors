@@ -27,21 +27,43 @@ $( ".navbar-toggler " ).on( "click", function() {
             }else{
 
             }
+            let set = $('.butn-dark')
+            console.log(set[0].value);
+            for (let x in set) {
+
+                if(Number.isInteger(Number(x))){
+                    // console.log(set[x].value());
+                    let id = set[x].value;
+                    let object =$('#count-'+ id);
+                    let count = Number(object.html());
+                    let price = Number($('#price-'+ id).html());
+                    $('#price-'+ id).html(price * count);
+
+                }
+
+            }
+
         }
         let set  = [];
     function edit(element , value){
         let id = element.value;
         let object =$('#count-'+ id);
-        let count = Number(object.html() );
+
+        let count = Number(object.html());
+        let price = Number($('#price-'+ id).html() ) / count;
+
+
         if(count + value === 0){
             id = object.attr('id').substring(6,999);
             document.getElementById("#order-"+id).remove();
-            deleteOrder(id)
+            deleteOrder(id);
 
         }else{
             object.html(count+value);
         }
+        $('#price-'+ id).html(price * (count+value));
         add_to_set()
+
         save();
     }
     function add_to_set(){

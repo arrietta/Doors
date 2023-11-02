@@ -10,7 +10,7 @@
                     <div class="door">
                         <div class="top inline">
                             <span class="name">{{ order.door.shape }}</span>
-                            <span class="price">{{ order.door.price }}</span>
+                            <span class="price" id='price-{{ order.pk }}'>{{ order.door.price }}</span>
                         </div>
                         <div class="bottom inline">
                             <span class="delete"><a onclick="">Удалить</a></span>
@@ -35,7 +35,9 @@
                         <input type="text" name="phone" id="phone" placeholder="Телефон">
                     </div>
                     <div class="check">
+                        <label>Доставка</label>
                         <input type="checkbox">
+                        <label>Бесплатный замер проемов</label>
                         <input type="checkbox">
                     </div>
 

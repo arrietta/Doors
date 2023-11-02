@@ -10,7 +10,7 @@
                     <div class="door">
                         <div class="top inline">
                             <span class="name">{{ order.door.shape.name }}</span>
-                            <span class="price">{{ order.door.price }}</span>
+                            <span class="price" id="price-{{ order.pk }}">{{ order.door.price }}</span>
                         </div>
                         <div class="bottom inline">
                             <span class="delete"><a onclick="">Удалить</a></span>

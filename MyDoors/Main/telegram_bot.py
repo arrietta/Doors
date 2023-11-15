@@ -16,7 +16,7 @@ def send_photo_to_bot(link):
     try:
         # жони
         chat_id = '@My_Alpha_Doors'
-        photo = open('media/' + link, 'rb')
+        photo = open(link[9:len(link)], 'rb')
         print(photo)
         bot.send_photo(chat_id, photo)
     except Exception as e:

@@ -3,8 +3,8 @@ from .models import Door
 
 
 class DoorAdmin(admin.ModelAdmin):
-    list_display = ('collection', 'shape', 'portal', 'bevel', 'molding', 'color', 'price',)
-    list_filter = ('collection', 'shape', 'portal', 'bevel', 'molding', 'color', 'price')
+    list_display = ('collection', 'shape', 'portal', 'bevel', 'molding', 'price',)
+    list_filter = ('collection', 'shape', 'portal', 'bevel', 'molding',  'price')
 
 
 admin.site.register(Door, DoorAdmin)

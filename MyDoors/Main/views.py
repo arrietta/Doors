@@ -2,12 +2,13 @@ import json
 import uuid
 
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.core.serializers import serialize
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 from .telegram_bot import send_message_to_bot, send_photo_to_bot
 from .forms import DoorForm
-from .models import Door, Basket
+from .models import Door, Basket, Orders
 
 
 def identification(request):
@@ -25,26 +26,20 @@ def catalog(request):
     print(unique_id)
     doors = Door.objects.all()
     data = json.loads(serializers.serialize('json', doors))
-    print()
     if request.method == 'POST':
         form = DoorForm(request.POST)
         if form.is_valid():
             form.save()
+            return redirect('cart')
+
     return render(request, 'catalog.html', {'data': data, 'unique_id': unique_id})
-    # result = Door.objects.get(pk=switch)
-    # img = result.get_image()
-    #
-    # message = f"{result}"
-    #
-    # send_photo_to_bot(img)
-    # send_message_to_bot(message)
 
 
-def basket(request):
+def cart(request):
     unique_id = identification(request)
     orders = Basket.objects.filter(code=unique_id)
 
-    return render(request, 'order.html', {'orders': orders})
+    return render(request, 'Cart.html', {'orders': orders, 'unique_id': unique_id})
 
 
 @csrf_exempt
@@ -70,3 +65,49 @@ def save(request):
 
 def main(request):
     return render(request, 'main.html', )
+
+
+def order(request):
+    Name = request.POST['name']
+    id = request.POST['unique_id']
+    phone = request.POST['phone']
+    delivery = request.POST['delivery']
+    size = request.POST['size']
+
+    doors = Basket.objects.filter(code=id)
+
+    for x in doors:
+        collection = x.door.collection
+        shape = x.door.shape
+        portal = x.door.portal
+        bevel = x.door.bevel
+        molding = x.door.molding
+        color = x.color
+        price = x.door.price
+        image = x.door.image.url
+        count = x.count
+        total = price * count
+
+        message = f"Имя :{Name} \nНомер: {phone}\nДоставка : {delivery} Замеры : {size}  \nКоллекция : {collection} Форма : {shape}  Портал : {portal}  Фреза : {bevel}  Багет : {molding} Цвет : {color} \nКоличество :{count} Итого : {total}"
+
+        send_photo_to_bot(image)
+
+        send_message_to_bot(message)
+        json_data = serialize('json', doors)
+
+        Save_order = Orders()
+        Save_order.name = Name
+        Save_order.phone = phone
+        Save_order.delivery = delivery
+        Save_order.size = size
+        Save_order.collection = collection
+        Save_order.shape = shape
+        Save_order.portal = portal
+        Save_order.bevel = bevel
+        Save_order.molding = molding
+        Save_order.color = color
+        Save_order.count = str(count)
+        Save_order.price = str(price)
+        Save_order.save()
+
+    return main(request)

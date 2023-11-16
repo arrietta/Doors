@@ -3,9 +3,16 @@
 
 let main_data = get_data;
 let data
+let query
 
-door_type = 'Classic';
-let input= {}
+let door_type = 'Classic';
+let input= {
+    'shape':'',
+    'portal': '',
+    'bevel': '',
+    'molding': '',
+    'type':'',
+}
 let collection ='';
 let types = {
   'collection': [],
@@ -13,9 +20,10 @@ let types = {
   'portal': [],
   'bevel': [],
   'molding': [],
+
 };
 colors= ['989ea1','f1ece1', 'e3d9c6', 'c8c8c7', 'c7c8cc', '52595d', 'eae2d7', 'ecece7', 'd2d3cd', '373c3f', '91583f', 'fb8989', '979392']
-const local = 'http://localhost:8000/media/'
+
 
 function clear(){
     types = {
@@ -27,10 +35,7 @@ function clear(){
       'molding': [],
     };
 
-    // $("#select_portal").empty();
-
     $("#select_bevel").empty();
-    $("#select_shape").empty();
     $("#select_molding").empty();
     $("#select_portal").empty();
 
@@ -38,14 +43,7 @@ function clear(){
 }
 colors.forEach(element => add_element('#'+element,'#select_color','color'));
 function iterate() {
-    main_data = get_data.filter(e => {
-        a = e['fields']['collection'].toString().toLowerCase();
-        b = collection.toString().toLowerCase();
 
-        return a === b;
-    }
-
-);
     clear()
     data = main_data.filter(e => e['fields']['type'] === door_type);
     data.forEach(e => {
@@ -58,7 +56,7 @@ function iterate() {
                     let check = true;
                     let i = types['shape'].length;
                     for (let j = 0; j < i; j++) {
-                        if(types['shape'][j]['icon'] == temp){
+                        if(types['shape'][j]['icon'] === temp){
                             check =false;
                         }
                     }
@@ -71,18 +69,14 @@ function iterate() {
                     let check = true;
                     let i = types['shape'].length;
                         for (let j = 0; j < i; j++) {
-                            if(types['shape'][j]['shape'] == temp){
+                            if(types['shape'][j]['shape'] === temp){
                                 check =false;
-
                             }
-
                         }
-
                         if(check){
                             types[el].push({'shape':temp});
                             types['shape'][i]['icon'] ='';
                         }
-
 
                 }else {
                     types[el].push(temp);
@@ -91,18 +85,12 @@ function iterate() {
         }
     });
 
-
     types['bevel'].forEach(element => add_element(element,'#select_bevel','bevel'));
     types['molding'].forEach(element => add_element(element,'#select_molding','molding'));
-    types['shape'].forEach(element => add_element(element,'#select_shape','shape'));
     types['portal'].forEach(element => add_element(element,'#select_portal','portal'));
 }
 
 iterate();
-
-
-
-
 
 
 elements = [];
@@ -114,7 +102,7 @@ function add_element(object, target , type) {
         $(target).append(`<button type="button" style="background-color: ${object}" class=${typee}  onclick="set_value(this,${typee})" value = "${object}"></button>`);
         $('.'+type).addClass('bttn-color');
     }else if(type === "shape"){
-         $(target).append(`<button type="button" class=${typee}  onclick="set_value(this,${typee})" value = "${object['shape']}"><img src="media/${object['icon']}"></button>`);
+         $(target).append(`<button type="button" class=${typee}  onclick="set_value(this,${typee})" value = "${object['shape']}" alt=""><img src="media/${object['icon']}"></button>`);
         $('.'+type).addClass('bttn-dark');
     }
     else{
@@ -125,19 +113,81 @@ function add_element(object, target , type) {
 }
 
 function set_value(item , type){
-    data = main_data.filter(e => e['fields'][type] === item.value);
+
+    cl =$('.pressed').attr('class');
+
+    input[type] = item.value;
+
+    if(type ==='shape'){
+        for (let inputKey in input) {
+            if(inputKey!=='shape'){
+                input[inputKey] = '';
+            }
+
+        }
+
+        main_data = get_data.filter(e => e['fields'][type] === item.value && e['fields']['type']===door_type);
+
+        query = get_data.filter(e => {
+        let res ;
+        for (let key  in input) {
+            if(input[key]){
+                res = e['fields'][key] === input[key] && e['fields']['type']===door_type;
+            }
+        }
+        return res;
+    });
+
+
+    }else if(type ==='molding'){
+        query = main_data.filter(e => {
+        let res ;
+        for (let key  in input) {
+            if(input[key]){
+                res = e['fields'][key] === input[key];
+
+            }
+
+        }
+
+        return res;
+
+    });
+
+    }else {
+        main_data = main_data.filter(e => e['fields'][type] === item.value);
+        query = main_data.filter(e => {
+        let res ;
+        for (let key  in input) {
+            if(input[key]){
+                res = e['fields'][key] === input[key];
+
+            }
+
+
+        }
+        return res;
+
+    });
+
+    }
+    console.log(query)
+    console.log(input)
+
+
     if(type==="color"){
         $('.image_box').css('background-color',item.value);
         $('#color').attr('value',item.value);
 
     }else{
         iterate()
-        set_image('media/'+data[0]['fields']['image'],$('#Door_image'));
-        set_image('media/'+data[0]['fields']['portal_image'],$('#portal_image'));
-        set_image('media/'+data[0]['fields']['molding_image'],$('#molding_image'));
-        $('#price').html(data[0]['fields']['price']);
-        $('#door').attr('value',data[0]['pk']);
 
+        set_image('media/'+query[0]['fields']['image'],$('#Door_image'));
+        set_image('media/'+query[0]['fields']['portal_image'],$('#portal_image'));
+        set_image('media/'+query[0]['fields']['molding_image'],$('#molding_image'));
+        $('#price').html(query[0]['fields']['price']);
+        $('#door').attr('value',query[0]['pk']);
+        $(item).addClass('pressed')
     }
 
 
@@ -194,7 +244,10 @@ $(document).ready(function(){
 
 function set_type(type){
     door_type = type;
+    $("#select_shape").empty();
+    main_data = get_data;
     iterate()
+    types['shape'].forEach(element => add_element(element,'#select_shape','shape'));
 }
 
 function choose(obj){
@@ -217,7 +270,15 @@ function open(obj){
 
         $('#collection').html(collection);
         $('.catalog').fadeOut();
+        main_data = main_data.filter(e => {
+        let a = e['fields']['collection'].toString().toLowerCase();
+        let b = collection.toString().toLowerCase();
+
+        return a === b ;
+
+    });
         iterate();
+        types['shape'].forEach(element => add_element(element,'#select_shape','shape'));
     },200);
 
 }

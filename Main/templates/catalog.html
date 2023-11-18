@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}Catalog{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'catalog.css'%}">
+    <main>
+      <div class="catalog">
+        <div class="choice">
+        <a href="#" class="choice c1"  onclick="changeToCatalogue1(this)">Эмаль</a>
+        <a href="#" class="choice c2" onclick="changeToCatalogue2(this)">Шпон</a>
+        </div>
+        <div class="content">
+            <div class="content-1" id="content-1">
+            <div>
+                <div class="contents"  ><a href="#" onclick="choose(this)">MODERN</a></div>
+                <span><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+            >
+              <circle cx="16" cy="16" r="16" fill="white" />
+              </svg>
+            </span>
+          <div class="contents"   ><a href="#" onclick="choose(this)" >CLASSIC</a></div>
+          <span
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+            >
+              <circle cx="16" cy="16" r="16" fill="white" /></svg></span>
+              <div class="contents"  ><a href="#" onclick="choose(this)" >GRAND</a></div></div>
+          <div>
+            <div class="contents"  ><a href="#" onclick="choose(this)" >AMPIR</a></div>
+          <span
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+            >
+              <circle cx="16" cy="16" r="16" fill="white" /></svg></span>
+              <div class="contents"  ><a href="#" onclick="choose(this)" >PORTO</a></div>
+          <span><svg
+              xmlns="http://www.w3.org/2000/svg" width="32"  height="32" viewBox="0 0 32 32" fill="none"
+            >
+              <circle cx="16" cy="16" r="16" fill="white" /></svg></span>
+              <div class="contents"  ><a href="#" onclick="choose(this)" >PANTOGRAPH</a></div></div>
+          <div>
+            <div class="contents"  ><a href="#"  onclick="choose(this)">GRIGLIA</a></div>
+          <span
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+            >
+              <circle cx="16" cy="16" r="16" fill="white" /></svg></span>
+              <div class="contents"  ><a href="#" onclick="choose(this)" >VISION</a></div>
+          <span
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+            >
+              <circle cx="16" cy="16" r="16" fill="white" /></svg></span>
+              <div class="contents"  ><a href="#" onclick="choose(this)">LINE</a></div></div>
+
+        </div>
+        <div class="content-2 right-move" id="content-2">
+            <div>
+                <div class="contents"  ><a href="#" onclick="choose(this)" >LOFT</a></div>
+          <span
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+            >
+              <circle cx="16" cy="16" r="16" fill="white" /></svg></span>
+            <div class="contents"  ><a href="#" onclick="choose(this)" >PLAIN</a></div>
+          <span
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+            >
+              <circle cx="16" cy="16" r="16" fill="white" /></svg ></span>
+            <div class="contents"  ><a href="#" onclick="choose(this)">ATLANTICA</a></div>
+            </div>
+
+        </div>
+    </div>
+      </div>
+        <div class="construct">
+            <div class="box" style="display: flex">
+                <div class="door_box Line">
+                    <div class="image_box" >
+                        <img  class="image" id="molding_image" src="{% static 'image/empty.png' %}" alt=""  >
+                        <img  class="image" id="Door_image" src="{% static 'image/door.png' %}" alt=""  >
+                        <img  class="image" id="portal_image" src="{% static 'image/portal.png' %}" alt=""  >
+
+                    </div>
+                    <div class="info_box">
+                    <div>
+                        <label class="door_name">Classic</label>
+                        <div class="">Цена: <strong id="price">0</strong></div>
+                    </div>
+                        <form method="post" action="{% url 'catalog' %}">
+                             {% csrf_token %}
+
+                            <input type="hidden"  name = "code" id ="code" value="{{unique_id}}">
+                            <input type="hidden"  name = "color" id ="color" value="#f1ece1">
+                            <input type="hidden" name = "door" id ="door" value="">
+                            <button class="cart_btn butn-light" onclick="validate() ">В корзину</button>
+                        </form>
+
+
+                </div>
+                </div>
+
+
+            <div>
+                <div class="door_types">
+                    <div class="Line type point" onclick="set_type('Classic')" id="collection">БАЗОВЫЙ ВАРИАНТ</div>
+                    <div class="Line type point" onclick="set_type('VO')">VO</div>
+                    <div class="type point" onclick="set_type('DO')">DO</div>
+                </div>
+                <div class="build">
+
+
+
+
+
+                    <label >Форма</label>
+
+                    <div class="select">
+                        <button type="button" class='bttn-dark left'  onclick="left()" ><img src="{% static 'image/arrow.svg'%}"></button>
+                        <div id = 'select_shape' class="selector">
+
+                        </div>
+                        <button type="button" class='bttn-dark right'  onclick="right()" ><img src="{% static 'image/arrow.svg'%}"></button>
+                    </div>
+
+                     <label >Портал</label>
+                    <div class="select" >
+                        <button type="button" class='bttn-dark left'  onclick="left()" ><img src="{% static 'image/arrow.svg'%}"></button>
+                        <div id="select_portal" class="selector">
+
+
+                        </div>
+                        <button type="button" class='bttn-dark right'  onclick="right()" ><img src="{% static 'image/arrow.svg'%}"></button>
+                    </div>
+
+
+                    <label >Багет</label>
+                    <div class="select" >
+                        <button type="button" class='bttn-dark left'  onclick="left()" ><img src="{% static 'image/arrow.svg'%}"></button>
+                        <div id="select_bevel" class="selector">
+
+                        </div>
+                        <button type="button" class='bttn-dark right'  onclick="right()" ><img src="{% static 'image/arrow.svg'%}"></button>
+                    </div>
+
+
+                    <label >Фреза</label>
+                    <div class="select" >
+                        <button type="button" class='bttn-dark left'  onclick="left()" ><img src="{% static 'image/arrow.svg'%}"></button>
+                        <div id="select_molding" class="selector" >
+
+
+                        </div>
+                        <button type="button" class='bttn-dark right'  onclick="right()" ><img src="{% static 'image/arrow.svg'%}"></button>
+                    </div>
+
+
+
+                </div>
+
+
+            </div>
+                <div class="color_pic ">
+                    <div class="title black">Цвет</div>
+                    <div class="colors" id="select_color">
+
+                    </div>
+                </div>
+
+        </div>
+        </div>
+
+    </main>
+    <script>
+        const get_data = {{data|safe}};
+    </script>
+
+    <script src="{% static 'script.js' %}"></script>
+<script>
+$('#link_catalog').attr('value','active');
+</script>
+<button></button>
+{% endblock %}

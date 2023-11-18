@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+
+
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@500&display=swap"rel="stylesheet">
+<main class="top-line">
+
+  <div class="page1">
+          
+          <div class="plain-text">
+            <h1>
+              Подберите <span id="specific-word">себе</span> двери с <br />
+              помощью нашего <br />
+              конструктора
+            </h1>
+            <a class="enter" href="{% url 'catalog'%}">
+              В каталог
+              <img src="{% static 'image/arrow.svg'%}" class="arrow" >
+            </a>
+          </div>
+        </div>
+  <div class="page2">
+    <div class="header">
+        <p >Наши преимущества:</p>
+    </div>
+    <div class="row">
+      <div class="col Line">
+        <div class="container">
+          <p class="number">01</p>
+          <div class="row-text">
+            Предоставляем гарантию <br />на двери и установку <br />
+            сроком на один год.
+          </div>
+        </div>
+
+      </div>
+      <div class="col">
+        <div class="container">
+        <p class="number">02</p>
+        <div class="row-text">
+          Доставка на следующий <br />день, после оформления <br />заказа,
+          без предоплаты.
+        </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col Line">
+        <div class="container">
+          <p class="number">03</p>
+          <p >Точно <br />замеряем.</p>
+          <img class="svg" src="{% static 'image/Group 39.svg'%}">
+        </div>
+
+
+      </div>
+      <div class="col">
+        <div class="container">
+          <p class="number">04</p>
+        <p>
+          Качественно <br />
+          устанавливаем.
+        </p>
+          <img class="svg" src="{% static 'image/Union.svg'%}">
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+  <div class="page3">
+      <div class="row">
+        <div class="col Line">
+          <div class="container">
+            <p class="number" >05</p>
+          <p class="title">О нас</p>
+          <p class="content-text">
+            Компания lowesso занимается продажей <br />межкомнатных дверей.
+            Полотна изготовлены из<br />
+            качественных современных материалов по<br />
+            новейшим технологиям и, благодаря великолепной <br />отделке и
+            продуманному дизайну, способны стать<br />
+            настоящим украшением интерьера. <br />
+            </br>
+            Убедитесь в этом, придя к нам в салон. Мы<br />
+            уверены, что Вы найдете именно ту дверь, которую <br />давно
+            искали. А наши продавцы помогут <br />определиться с выбором.
+            Работы по установке <br />дверей выполняют
+            высококвалифицированные<br />
+            специалисты. Нам важно, чтобы покупка в нашем магазине<br />
+            была для Вас приятной и оставила только<br />
+            положительные эмоции.
+          </p>
+          </div>
+
+        </div>
+        <div class="col text-logo">
+
+          <h1>LOGO</h1>
+        </div>
+            </div>
+            <div class="row">
+              <div class="col Line">
+                <div class="container">
+                  <div class="top-text">
+                  <p class="number">06</p>
+                  <p class="title">
+                    Убедитесь в нашей<br />
+                    компитентности у нас<br />
+                    в салоне
+                  </p>
+                </div>
+                  <div class="bottom-text">
+
+                  <div class="contact" >
+                    <span>name@gmail.com</span>
+
+                    <span>8-(985)-222-01-08</span>
+                  </div>
+                  <span class="text-center-h" >
+                    Ш. Автомагистраль Москва – <br />Нижний Новгород, вл. 19Bc1,
+                    Реутов
+                  </span>
+                </div>
+                </div>
+
+
+              </div>
+              <div class="col ">
+                <iframe
+                        class="map"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d39048.74231686945!2d37.825193244501335!3d55.76339870044172!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x414acbabd918f9d3%3A0x20e47883c02e9d18!2z0KDQtdGD0YLQvtCyLCDQnNC-0YHQutC-0LLRgdC60LDRjyDQvtCx0LsuLCDQoNC-0YHRgdC40Y8!5e1!3m2!1sru!2skz!4v1697822980313!5m2!1sru!2skz"
+                  width="100%"
+                  height="100%"
+                  style="border: 0"
+                  allowfullscreen="true"
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-s Line ">
+                <div class="container-s">
+                  <p class="title">Замер</p>
+                  <div class="content-text-s">
+                    При заказе у вас имеется возможность вернуть деньги за замер
+                  </div>
+
+                </div>
+                <img class="svg" src="{% static 'image/Group 39.svg'%}">
+              <div class="bottom-text border">
+                    <span>800 ₽ За проем</span>
+                    <div class="Line"></div>
+                    <a href="#">Позвонить</a>
+                  </div>
+              </div>
+              <div class="col-s Line ">
+                <div class="container-s">
+                  <p class="title">Установка</p>
+                  <div class="content-text-s">
+                    Для полной информации о цене на ваш заказ уточните у дилера
+                  </div>
+
+
+                </div>
+                 <img class="svg" src="{% static 'image/Install.svg'%}">
+                <div class="bottom-text border">
+                  <span>Договорная</span>
+                  <div class="Line"></div>
+                  <a href="#">Позвонить</a>
+                </div>
+
+              </div>
+              <div class="col-s Line">
+                <div class="container-s">
+                  <p class="title">Доставка</p>
+
+                  <div class="content-text-s">+ 50 ₽/КМ если доставка за пределы МКАД</div>
+
+                </div>
+                 <img class="svg" src="{% static 'image/Delivery.svg'%}">
+                <div class="bottom-text border">
+                  <span >2500 ₽</span>
+                  <div class="Line"></div>
+                  <a href="#">Позвонить</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+</main>
+<script>
+$('#link_main').attr('value','active');
+</script>
+{% endblock %}
